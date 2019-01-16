@@ -2,30 +2,23 @@ package sr.core;
 
 import java.util.Objects;
 
-//TODO DONE
 public class Edge {
-    private static final double DEFAULT_WEIGHT = 1.0;
+    private final Vertex source;
+    private final Vertex destination;
+    private final double weight;
 
-    private Node v1, v2;
-    private double weight;
-
-    public Edge(Node v1, Node v2) {
-        this(v1, v2, DEFAULT_WEIGHT);
-    }
-
-    public Edge(Node v1, Node v2, double weight) {
-        super();
-        this.v1 = v1;
-        this.v2 = v2;
+    public Edge(Vertex source, Vertex destination, double weight) {
+        this.source = source;
+        this.destination = destination;
         this.weight = weight;
     }
 
-    public Node getV1() {
-        return v1;
+    public Vertex getSource() {
+        return source;
     }
 
-    public Node getV2() {
-        return v2;
+    public Vertex getDestination() {
+        return destination;
     }
 
     public double getWeight() {
@@ -33,16 +26,26 @@ public class Edge {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Edge)) return false;
+    public String toString() {
+        return "Vertex{" +
+                "source=" + source +
+                ", destination=" + destination +
+                ", weight=" + weight +
+                '}';
+    }
 
-        Edge _obj = (Edge) obj;
-        return this.v1.equals(_obj.getV1()) && v2.equals(_obj.getV2()) && this.weight == _obj.getWeight();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge vertex = (Edge) o;
+        return Double.compare(vertex.weight, weight) == 0 &&
+                Objects.equals(source, vertex.source) &&
+                Objects.equals(destination, vertex.destination);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(v1, v2, weight);
+        return Objects.hash(source, destination, weight);
     }
 }

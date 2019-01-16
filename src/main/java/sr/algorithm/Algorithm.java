@@ -4,7 +4,7 @@ package sr.algorithm;
 
 import sr.core.Edge;
 import sr.core.Graph;
-import sr.core.Node;
+import sr.core.Vertex;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,30 +13,30 @@ public class Algorithm {
 
     private Graph graph;
 
-    Map<List<Node>,Double> properPathProbabilites;
+    Map<List<Vertex>,Double> properPathProbabilites;
 
     public Algorithm(Graph graph) {
         this.graph = graph;
         this.properPathProbabilites = new HashMap<>();
     }
 
-    public Map<List<Node>, Double> getProperPathProbabilites() {
+    public Map<List<Vertex>, Double> getProperPathProbabilites() {
         return properPathProbabilites.isEmpty() ? findPathProbabilities() : properPathProbabilites;
     }
 
-    public Map<List<Node>,Double> findPathProbabilities() {
-        List<Node> nodeList = new ArrayList<>();
-        Map<List<Node>,Double> pathProbabilites = new HashMap<>();
+    public Map<List<Vertex>,Double> findPathProbabilities() {
+        List<Vertex> nodeList = new ArrayList<>();
+        Map<List<Vertex>,Double> pathProbabilites = new HashMap<>();
         double currentProbability = 1;
         pathProbabilites.put(nodeList, currentProbability);
-        Node startNode = graph.getStartNode();
-        Node lastNode = graph.getLastNode();
+        Vertex startNode = graph.getStartNode();
+        Vertex lastNode = graph.getLastNode();
         multiplyProbabilityThroughNextNode(startNode, nodeList, pathProbabilites, currentProbability);
         properPathProbabilites = filterProperPaths(pathProbabilites, lastNode);
         return properPathProbabilites;
     }
 
-    private Map<List<Node>,Double> filterProperPaths(Map<List<Node>,Double> pathProbabilites, Node endNode) {
+    private Map<List<Vertex>,Double> filterProperPaths(Map<List<Vertex>,Double> pathProbabilites, Vertex endNode) {
        return pathProbabilites.entrySet()
                .stream()
                .filter(entry -> entry.getKey().contains(endNode))
@@ -44,9 +44,9 @@ public class Algorithm {
                        entry -> entry.getValue()));
     }
 
-    private void multiplyProbabilityThroughNextNode(Node node,
-                                                    List<Node> nodeList,
-                                                    Map<List<Node>,Double> pathProbabilites,
+    private void multiplyProbabilityThroughNextNode(Vertex node,
+                                                    List<Vertex> nodeList,
+                                                    Map<List<Vertex>,Double> pathProbabilites,
                                                     double currentProbability) {
         //add new node to list
         double probability = pathProbabilites.get(nodeList);
@@ -60,21 +60,21 @@ public class Algorithm {
         if (edges == null)
             return;
         edges.stream().forEach( edge -> {
-            List<Node> newList = new ArrayList<>();
+            List<Vertex> newList = new ArrayList<>();
             newList.addAll(nodeList);
             pathProbabilites.put(newList, newProbability);
-            multiplyProbabilityThroughNextNode(edge.getV2(), newList, pathProbabilites, edge.getWeight());
+            multiplyProbabilityThroughNextNode(edge.getDestination(), newList, pathProbabilites, edge.getWeight());
         });
     }
 
-    private Set<Edge> getEdgesRelatedWithNode(Node node) {
+    private Set<Edge> getEdgesRelatedWithNode(Vertex node) {
         return graph.getAdjEdgesNew(node);
     }
 
     public void printPathsWithProbabilities() {
         System.out.println("Found paths with probabilities: ");
         properPathProbabilites.entrySet().stream().forEach(entry -> {
-            entry.getKey().stream().forEach(key -> System.out.print(key.getLabel() + ", "));
+            entry.getKey().stream().forEach(key -> System.out.print(key.getId() + ", "));
             System.out.println(entry.getValue().toString());
         });
     }
@@ -111,7 +111,7 @@ public class Algorithm {
         });
     }
 
-    private List<Node> findTheMostExpensiveNodes() {
+    private List<Vertex> findTheMostExpensiveNodes() {
         return graph.getVertices().stream().sorted((node1, node2) -> {
             int answer;
             if (node1.getCost() == node2.getCost()) {
@@ -133,7 +133,7 @@ public class Algorithm {
         return cost[0];
     }
 
-    private Double calculateCostForSingleNode(Node node) {
+    private Double calculateCostForSingleNode(Vertex node) {
         Double cost;
         cost = node.getS() + node.getAlpha() * Math.pow(Math.E, node.getBeta() * node.getReliability());
         node.setCost(cost);
@@ -141,15 +141,15 @@ public class Algorithm {
     }
 
     private Double calculateReliabilityForStructure() {
-        Map<List<Node>, Double> properPathProbabilites = getProperPathProbabilites();
+        Map<List<Vertex>, Double> properPathProbabilites = getProperPathProbabilites();
         Double reliability = 0.0;
-        for (Map.Entry<List<Node>, Double> entry : properPathProbabilites.entrySet()) {
+        for (Map.Entry<List<Vertex>, Double> entry : properPathProbabilites.entrySet()) {
             reliability = reliability + calculateReliabilityForSinglePath(entry.getKey(), entry.getValue());
         }
         return reliability;
     }
 
-    private Double calculateReliabilityForSinglePath(List<Node> nodes, Double probability) {
+    private Double calculateReliabilityForSinglePath(List<Vertex> nodes, Double probability) {
         final double[] reliability = {1};
         nodes.stream().forEach(node -> {
             reliability[0] = reliability[0] * node.getReliability();

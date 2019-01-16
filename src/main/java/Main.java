@@ -1,30 +1,26 @@
 import sr.algorithm.Algorithm;
+import sr.algorithm.OptimizationParams;
 import sr.core.Graph;
-import sr.utils.GraphManager;
+import sr.core.GraphFactory;
 import sr.utils.GraphPrinter;
-import sr.utils.GraphUtils;
-import sr.utils.ReaderHelper;
 
 public class Main {
 
     public static void main(String[] args) {
-        ReaderHelper readerHelper = new ReaderHelper();
-        GraphUtils graphUtils = new GraphUtils();
-        GraphManager graphManager = new GraphManager(readerHelper, graphUtils);
-        Graph graph = graphManager.createGraph(
+        Graph graph = GraphFactory.createGraph(
                 "transition-matrix.txt",
                 "alpha.txt",
                 "beta.txt",
                 "costs.txt",
-                "params.txt");
+                "params.txt"
+        );
+        OptimizationParams params = new OptimizationParams();
 
         GraphPrinter graphPrinter = new GraphPrinter(graph);
         graphPrinter.printGraph();
-
         Algorithm algorithm = new Algorithm(graph);
         algorithm.run(graph.getMaxCost(), graph.getMinReliability());
         algorithm.printPathsWithProbabilities();
-
         graphPrinter.printGraph();
     }
 }

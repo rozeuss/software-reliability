@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Graph {
-    private Set<Node> vertices;
+    private Set<Vertex> vertices;
     private Set<Edge> edges;
-    private Map<Node, Set<Edge>> adjList;
+    private Map<Vertex, Set<Edge>> adjList;
     private Double maxCost;
     private Double minReliability;
 
@@ -17,15 +17,15 @@ public class Graph {
     }
 
     public boolean addNode(String label) {
-        return vertices.add(new Node(label));
+        return vertices.add(new Vertex(label));
     }
 
-    public Node addNodeIfNotExist(String label) {
-        Node newNode = new Node(label);
+    public Vertex addNodeIfNotExist(String label) {
+        Vertex newNode = new Vertex(label);
         if (vertices.contains(newNode)) {
             return vertices.stream()
                     .filter(vertice ->
-                            vertice.getLabel()
+                            vertice.getId()
                                     .equals(label))
                     .findFirst().get();
         } else {
@@ -37,11 +37,11 @@ public class Graph {
     public boolean addEdge(Edge e) {
         if (!edges.add(e)) return false;
 
-        adjList.putIfAbsent(e.getV1(), new HashSet<>());
-        adjList.putIfAbsent(e.getV2(), new HashSet<>());
+        adjList.putIfAbsent(e.getSource(), new HashSet<>());
+        adjList.putIfAbsent(e.getDestination(), new HashSet<>());
 
-        adjList.get(e.getV1()).add(e);
-        adjList.get(e.getV2()).add(e);
+        adjList.get(e.getSource()).add(e);
+        adjList.get(e.getDestination()).add(e);
 
         return true;
     }
@@ -55,8 +55,8 @@ public class Graph {
 
     public boolean removeEdge(Edge e) {
         if (!edges.remove(e)) return false;
-        Set<Edge> edgesOfV1 = adjList.get(e.getV1());
-        Set<Edge> edgesOfV2 = adjList.get(e.getV2());
+        Set<Edge> edgesOfV1 = adjList.get(e.getSource());
+        Set<Edge> edgesOfV2 = adjList.get(e.getDestination());
 
         if (edgesOfV1 != null) edgesOfV1.remove(e);
         if (edgesOfV2 != null) edgesOfV2.remove(e);
@@ -64,23 +64,23 @@ public class Graph {
         return true;
     }
 
-    public Set<Edge> getAdjEdgesNew(Node v) {
+    public Set<Edge> getAdjEdgesNew(Vertex v) {
         return adjList.get(v).stream()
-                .filter(e -> e.getV1().equals(v))
+                .filter(e -> e.getSource().equals(v))
                 .collect(Collectors.toSet());
     }
 
-    public Node getStartNode() {
+    public Vertex getStartNode() {
         return vertices.stream().findFirst().get();
     }
 
-    public Node getLastNode() {
-        List<Node> tempList = new ArrayList<>();
+    public Vertex getLastNode() {
+        List<Vertex> tempList = new ArrayList<>();
         tempList.addAll(vertices);
         return tempList.get(tempList.size()-1);
     }
 
-    public Set<Node> getVertices() {
+    public Set<Vertex> getVertices() {
         return Collections.unmodifiableSet(vertices);
     }
 

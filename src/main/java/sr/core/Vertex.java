@@ -2,47 +2,36 @@ package sr.core;
 
 import java.util.Objects;
 
-// TODO DONE
-public class Node {
-    private String uniqueLabel;
+public class Vertex {
+    private final String id;
     private double alpha;
     private double beta;
     private double s;
     private double reliability;
     private double cost;
 
-    public Node(String uniqueLabel) {
-        this.uniqueLabel = uniqueLabel;
+    public Vertex(String id) {
+        this.id = id;
     }
 
+
+    //TODO danger to modify - used in algorithm
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Node)) return false;
+        if (!(obj instanceof Vertex)) return false;
 
-        Node _obj = (Node) obj;
-        return this.uniqueLabel.equals(_obj.getLabel());
+        Vertex _obj = (Vertex) obj;
+        return this.id.equals(_obj.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueLabel);
+        return Objects.hash(id);
     }
 
-    public String getLabel() {
-        return uniqueLabel;
-    }
-
-    public void setLabel(String uniqueLabel) {
-        this.uniqueLabel = uniqueLabel;
-    }
-
-    public String getUniqueLabel() {
-        return uniqueLabel;
-    }
-
-    public void setUniqueLabel(String uniqueLabel) {
-        this.uniqueLabel = uniqueLabel;
+    public String getId() {
+        return id;
     }
 
     public double getAlpha() {

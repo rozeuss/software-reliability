@@ -3,7 +3,7 @@ package sr.utils;
 
 import org.graphstream.graph.implementations.SingleGraph;
 import sr.core.Graph;
-import sr.core.Node;
+import sr.core.Vertex;
 
 
 import java.text.DecimalFormat;
@@ -21,18 +21,18 @@ public class GraphPrinter {
 
     private void initializeGraphToBePrinted() {
         graph.getEdges().stream().forEach(edge -> {
-            addNodeToGraphToBePrinted(edge.getV1());
-            addNodeToGraphToBePrinted(edge.getV2());
+            addNodeToGraphToBePrinted(edge.getSource());
+            addNodeToGraphToBePrinted(edge.getDestination());
             graphToBePrinted.addEdge(
-                    Double.toString(edge.getWeight()) + edge.getV1().getLabel() + edge.getV2().getLabel(),
-                    edge.getV1().getLabel(),
-                    edge.getV2().getLabel(), true);
+                    Double.toString(edge.getWeight()) + edge.getSource().getId() + edge.getDestination().getId(),
+                    edge.getSource().getId(),
+                    edge.getDestination().getId(), true);
         });
     }
 
-    private void addNodeToGraphToBePrinted(Node node) {
+    private void addNodeToGraphToBePrinted(Vertex node) {
         try {
-            graphToBePrinted.addNode(node.getLabel());
+            graphToBePrinted.addNode(node.getId());
         } catch (Exception e) {
             System.out.println("Node already exists");
         }
@@ -52,7 +52,7 @@ public class GraphPrinter {
     private void printReliabilityOnConsole() {
         System.out.println("R = [ ");
         graph.getVertices().stream().forEach(node -> {
-            System.out.println(node.getLabel() + " reliability: " + node.getReliability() + ", ");
+            System.out.println(node.getId() + " reliability: " + node.getReliability() + ", ");
         });
         System.out.print(" ]");
     }
@@ -60,9 +60,9 @@ public class GraphPrinter {
     private void addAttributeLabelsToNodes() {
         DecimalFormat df = new DecimalFormat("#.00");
         graph.getVertices().stream().forEach(node -> {
-            org.graphstream.graph.Node e1 = graphToBePrinted.getNode(node.getLabel());
+            org.graphstream.graph.Node e1 = graphToBePrinted.getNode(node.getId());
             e1.setAttribute("ui.style", "shape:circle;fill-color: yellow;size: 50px; text-alignment: center;");
-            e1.setAttribute("ui.label", node.getLabel() + ", "
+            e1.setAttribute("ui.label", node.getId() + ", "
                     + df.format(node.getAlpha()) + ", "
                     + df.format(node.getBeta())  + ", "
                     + df.format(node.getS()));
@@ -72,9 +72,9 @@ public class GraphPrinter {
     private void addCostAndReliabilityLabelsToNodes() {
         DecimalFormat df = new DecimalFormat("#.000");
         graph.getVertices().stream().forEach(node -> {
-            org.graphstream.graph.Node e1 = graphToBePrinted.getNode(node.getLabel());
+            org.graphstream.graph.Node e1 = graphToBePrinted.getNode(node.getId());
             e1.setAttribute("ui.style", "shape:circle;fill-color: yellow;size: 50px; text-alignment: center;");
-            e1.setAttribute("ui.label", node.getLabel() + ", "
+            e1.setAttribute("ui.label", node.getId() + ", "
                     + df.format(node.getReliability()) + ", "
                     + df.format(node.getCost()));
         });
@@ -83,7 +83,7 @@ public class GraphPrinter {
     private void addLabelsToEnges() {
         graph.getEdges().stream().forEach(edge -> {
             org.graphstream.graph.Edge e1 = graphToBePrinted.getEdge(
-                    Double.toString(edge.getWeight()) + edge.getV1().getLabel() + edge.getV2().getLabel());
+                    Double.toString(edge.getWeight()) + edge.getSource().getId() + edge.getDestination().getId());
             e1.setAttribute("ui.label", Double.toString(edge.getWeight()));
         });
     }
