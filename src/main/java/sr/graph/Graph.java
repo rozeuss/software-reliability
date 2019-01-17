@@ -26,7 +26,7 @@ public class Graph {
                 .orElseThrow(() -> new RuntimeException("Vertex not found = " + id));
     }
 
-    public Set<Edge> getIncidentEdgesForVertex(Vertex vertex) {
+    public Set<Edge> getEdgesIncidentToVertex(Vertex vertex) {
         return vertexIncidentEdges.get(vertex).stream()
                 .filter(e -> e.getSource().equals(vertex)).collect(Collectors.toSet());
     }

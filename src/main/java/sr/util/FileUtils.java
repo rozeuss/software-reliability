@@ -2,6 +2,7 @@ package sr.util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,5 +44,15 @@ public class FileUtils {
             e.printStackTrace();
         }
         return Optional.ofNullable(values).orElse(Collections.emptyList());
+    }
+
+    public static String getStylesheetPath()  {
+        URL resource = View.class.getClassLoader().getResource("stylesheet");
+        try {
+            return resource.toURI().getPath();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

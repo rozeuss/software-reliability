@@ -6,11 +6,12 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import sr.graph.Graph;
 import sr.graph.Vertex;
 
-import java.text.DecimalFormat;
 import java.util.function.Consumer;
 
 public class View {
 
+    private static final String ALPHA = "\u03B1";
+    private static final String BETA = "\u03B2";
     private org.graphstream.graph.Graph guiGraph = new DefaultGraph("GUI");
     private Graph dataGraph;
 
@@ -21,49 +22,37 @@ public class View {
 
     private void setupGuiGraph() {
         dataGraph.getVertices().forEach(setupVertices());
+        colorLastNode();
         dataGraph.getEdges().forEach(setupEdges());
+        guiGraph.addAttribute("ui.stylesheet", "url('file://" + FileUtils.getStylesheetPath() + "')");
+    }
+
+    private void colorLastNode() {
+        Node node = guiGraph.getNode(dataGraph.getVertices().size() - 1);
+        node.addAttribute("ui.style", "fill-color: red, #254; fill-mode: gradient-diagonal2;");
     }
 
     private Consumer<sr.graph.Edge> setupEdges() {
         return edge -> {
             Edge e = guiGraph.addEdge(edge.getSource().getId() + edge.getDestination().getId(),
                     edge.getSource().getId(), edge.getDestination().getId(), true);
-            e.setAttribute("ui.label", Double.toString(edge.getWeight()));
-            e.setAttribute("ui.style", "shape: line; fill-color: #C3C3C3; arrow-size: 3px, 2px;");
+            e.addAttribute("ui.label", Double.toString(edge.getWeight()));
         };
     }
 
     private Consumer<Vertex> setupVertices() {
         return vertex -> {
             Node n = guiGraph.addNode(vertex.getId());
-            DecimalFormat df = new DecimalFormat("#.00");
-            n.setAttribute("ui.style", "fill-color: #00FFFF; size: 30px;");
-            n.setAttribute("ui.label", vertex.getId() + ", "
-                    + df.format(vertex.getAlpha()) + ", "
-                    + df.format(vertex.getBeta()) + ", "
-                    + df.format(vertex.getS()));
+            n.addAttribute("ui.label", "(" + vertex.getId() + ") "
+                    + String.format(ALPHA + ": %.02f", vertex.getAlpha()) + ", "
+                    + String.format(BETA + ": %.02f", vertex.getBeta()) + ", "
+                    + String.format("S: %.02f", vertex.getS()) + ", "
+                    + String.format("R: %.02f", vertex.getReliability()) + ", "
+                    + String.format("C: %.02f", vertex.getCost()));
         };
     }
 
     public void show() {
-        addCostAndReliabilityLabelsToNodes();
-        printReliabilities();
         guiGraph.display();
-    }
-
-    private void printReliabilities() {
-        System.out.println("Reliabilities: ");
-        dataGraph.getVertices().forEach(node -> System.out.println(node.getId() + " " + node.getReliability()));
-    }
-
-    private void addCostAndReliabilityLabelsToNodes() {
-        DecimalFormat df = new DecimalFormat("#.000");
-        dataGraph.getVertices().forEach(node -> {
-            org.graphstream.graph.Node e1 = guiGraph.getNode(node.getId());
-            e1.setAttribute("ui.style", "fill-color: #00FFFF; size: 30px;");
-            e1.setAttribute("ui.label", node.getId() + ", "
-                    + df.format(node.getReliability()) + ", "
-                    + df.format(node.getCost()));
-        });
     }
 }

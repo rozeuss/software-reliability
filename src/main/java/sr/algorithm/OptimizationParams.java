@@ -18,11 +18,11 @@ public class OptimizationParams {
         return new OptimizationParams(Double.parseDouble(params.get(0)), Double.parseDouble(params.get(1)));
     }
 
-    public Double getMaxCost() {
+    Double getMaxCost() {
         return maxCost;
     }
 
-    public Double getMinReliability() {
+    Double getMinReliability() {
         return minReliability;
     }
 }

@@ -1,0 +1,34 @@
+graph {
+    fill-color: #EDEDED;
+    padding: 50;
+}
+
+node {
+    fill-color: aquamarine, #254;
+    fill-mode: gradient-diagonal2;
+    size: 35px;
+    text-alignment: under;
+    text-background-mode: rounded-box;
+    text-color: white;
+    text-background-color: #222C;
+    stroke-mode: plain;
+    stroke-color: #555;
+    text-style: bold;
+    text-padding: 1px;
+    text-offset: 0px, 2px;
+    text-size: 13;
+}
+
+node#A {
+    fill-color: blue, #0a1a13;
+    fill-mode: gradient-diagonal2;
+}
+
+edge {
+    fill-color: #8f8f8f;
+    arrow-shape: arrow;
+    text-style: bold;
+    text-alignment: under;
+    text-size: 13;
+    shape: cubic-curve;
+}
