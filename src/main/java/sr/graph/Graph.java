@@ -1,84 +1,52 @@
 package sr.graph;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-
-//TODO
 public class Graph {
-    private Set<Vertex> vertices;
-    private Set<Edge> edges;
-    private Map<Vertex, Set<Edge>> adjacencyMap;
+    private final TreeSet<Vertex> vertices;
+    private final Set<Edge> edges;
+    private final Map<Vertex, Set<Edge>> adjacencyMap;
 
     Graph() {
-        vertices = new HashSet<>();
+        vertices = new TreeSet<>(Comparator.comparing(Vertex::getId));
         edges = new HashSet<>();
         adjacencyMap = new HashMap<>();
     }
 
-    public boolean addNode(String label) {
-        return vertices.add(new Vertex(label));
-    }
-
-    public Vertex addNodeIfNotExist(String label) {
-        Vertex newNode = new Vertex(label);
-        if (vertices.contains(newNode)) {
-            return vertices.stream()
-                    .filter(vertice ->
-                            vertice.getId()
-                                    .equals(label))
-                    .findFirst().get();
-        } else {
-            vertices.add(newNode);
-        }
-        return newNode;
-    }
-
-    public boolean addEdge(Edge e) {
-        if (!edges.add(e)) return false;
-
+    //TODO
+    private void addEdge(Edge e) {
+        edges.add(e);
         adjacencyMap.putIfAbsent(e.getSource(), new HashSet<>());
         adjacencyMap.putIfAbsent(e.getDestination(), new HashSet<>());
-
         adjacencyMap.get(e.getSource()).add(e);
         adjacencyMap.get(e.getDestination()).add(e);
-
-        return true;
     }
 
-    public boolean addEdge(String NodeLabel1, String NodeLabel2, double weight) {
-        if (weight != 0.0)
-            addEdge(new Edge(addNodeIfNotExist(NodeLabel1),
-                    addNodeIfNotExist(NodeLabel2), weight));
-        return false;
+    //TODO
+    void addEdge(String source, String destination, double weight) {
+        addEdge(new Edge(
+            vertices.stream().filter(vertice -> vertice.getId().equals(source)).findFirst().get(),
+            vertices.stream().filter(vertice -> vertice.getId().equals(destination)).findFirst().get(),
+            weight));
     }
 
-    public boolean removeEdge(Edge e) {
-        if (!edges.remove(e)) return false;
-        Set<Edge> edgesOfV1 = adjacencyMap.get(e.getSource());
-        Set<Edge> edgesOfV2 = adjacencyMap.get(e.getDestination());
-
-        if (edgesOfV1 != null) edgesOfV1.remove(e);
-        if (edgesOfV2 != null) edgesOfV2.remove(e);
-
-        return true;
+    public Set<Edge> getAdjacentEdges(Vertex vertex) {
+        return adjacencyMap.get(vertex).stream().filter(e -> e.getSource().equals(vertex)).collect(Collectors.toSet());
     }
 
-
-    public Set<Edge> getAdjEdgesNew(Vertex v) {
-        return adjacencyMap.get(v).stream()
-                .filter(e -> e.getSource().equals(v))
-                .collect(Collectors.toSet());
+    public Vertex getFirstVertex() {
+        return vertices.first();
     }
 
-    public Vertex getStartNode() {
-        return vertices.stream().findFirst().get();
-    }
-
-    public Vertex getLastNode() {
-        List<Vertex> tempList = new ArrayList<>();
-        tempList.addAll(vertices);
-        return tempList.get(tempList.size() - 1);
+    public Vertex getLastVertex() {
+        return vertices.last();
     }
 
     public Set<Vertex> getVertices() {
@@ -87,6 +55,10 @@ public class Graph {
 
     public Set<Edge> getEdges() {
         return Collections.unmodifiableSet(edges);
+    }
+
+    void addVertex(String id) {
+        vertices.add(new Vertex(id));
     }
 
 }

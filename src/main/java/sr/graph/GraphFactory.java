@@ -1,47 +1,48 @@
 package sr.graph;
 
-
-import sr.util.FileUtils;
-
 import java.util.List;
 import java.util.stream.IntStream;
+import sr.util.FileUtils;
 
 public class GraphFactory {
-    private final static char firstChar = 'A';
-    private static GraphFactory INSTANCE;
+    private static final char FIRST_CHAR = 'A';
+    private static GraphFactory instance;
 
     private GraphFactory() {
     }
 
     public static GraphFactory getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new GraphFactory();
+        if (instance == null) {
+            instance = new GraphFactory();
         }
-        return INSTANCE;
+        return instance;
     }
 
     private static Graph fromTransitionMatrix(double[][] matrix) {
         final Graph graph = new Graph();
-        IntStream.range(0, matrix.length).forEach(i -> {
-            graph.addNode(String.valueOf((char) (GraphFactory.firstChar + i)));
-            IntStream.range(0, matrix.length).forEach(j ->
-                    graph.addEdge(String.valueOf((char) (GraphFactory.firstChar + i)),
-                            String.valueOf((char) (GraphFactory.firstChar + j)), matrix[i][j]));
-        });
+        IntStream.range(0, matrix.length).forEach(x -> graph.addVertex(String.valueOf((char) (FIRST_CHAR + x))));
+        IntStream.range(0, matrix.length).forEach(i ->
+            IntStream.range(0, matrix.length).forEach(j -> {
+                    if (matrix[i][j] != 0.0) {
+                        graph.addEdge(String.valueOf((char) (FIRST_CHAR + i)), String.valueOf((char) (FIRST_CHAR + j)),
+                            matrix[i][j]);
+                    }
+                }
+            ));
         return graph;
     }
 
     public Graph createGraph(String transitionMatrix, String alpha, String beta, String cost) {
-        return setupGraph(FileUtils.readDoubleArray(transitionMatrix), FileUtils.readLines(alpha),
-                FileUtils.readLines(beta), FileUtils.readLines(cost));
+        return setupGraph(FileUtils.readDoubleArray(transitionMatrix), FileUtils.readLinesAsDoubles(alpha),
+            FileUtils.readLinesAsDoubles(beta), FileUtils.readLinesAsDoubles(cost));
     }
 
-    private static Graph setupGraph(double[][] matrix, List<String> alphas, List<String> betas, List<String> costs) {
+    private static Graph setupGraph(double[][] matrix, List<Double> alphas, List<Double> betas, List<Double> costs) {
         Graph graph = fromTransitionMatrix(matrix);
         graph.getVertices().forEach(vertex -> {
-            vertex.setAlpha(Double.valueOf(alphas.get(vertex.getId().charAt(0) - firstChar)));
-            vertex.setBeta(Double.valueOf(betas.get(vertex.getId().charAt(0) - firstChar)));
-            vertex.setS(Double.valueOf(costs.get(vertex.getId().charAt(0) - firstChar)));
+            vertex.setAlpha(alphas.get(vertex.getId().charAt(0) - FIRST_CHAR));
+            vertex.setBeta(betas.get(vertex.getId().charAt(0) - FIRST_CHAR));
+            vertex.setS(costs.get(vertex.getId().charAt(0) - FIRST_CHAR));
         });
         return graph;
     }

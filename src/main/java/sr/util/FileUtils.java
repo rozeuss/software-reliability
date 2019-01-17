@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +25,10 @@ public class FileUtils {
                 .toArray(double[][]::new);
     }
 
+    public static List<Double> readLinesAsDoubles(String filename) {
+        return readLines(filename).stream().map(Double::valueOf).collect(Collectors.toList());
+    }
+
     public static List<String> readLines(String filename) {
         Path path = null;
         try {
@@ -36,6 +42,6 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return values;
+        return Optional.ofNullable(values).orElse(Collections.emptyList());
     }
 }

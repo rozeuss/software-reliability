@@ -31,8 +31,8 @@ public class Algorithm {
         Map<List<Vertex>,Double> pathProbabilites = new HashMap<>();
         double currentProbability = 1;
         pathProbabilites.put(nodeList, currentProbability);
-        Vertex startNode = graph.getStartNode();
-        Vertex lastNode = graph.getLastNode();
+        Vertex startNode = graph.getFirstVertex();
+        Vertex lastNode = graph.getLastVertex();
         multiplyProbabilityThroughNextNode(startNode, nodeList, pathProbabilites, currentProbability);
         properPathProbabilites = filterProperPaths(pathProbabilites, lastNode);
         return properPathProbabilites;
@@ -70,7 +70,7 @@ public class Algorithm {
     }
 
     private Set<Edge> getEdgesRelatedWithNode(Vertex node) {
-        return graph.getAdjEdgesNew(node);
+        return graph.getAdjacentEdges(node);
     }
 
     public void printPathsWithProbabilities() {

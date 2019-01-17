@@ -10,10 +10,21 @@ public class Vertex {
     private double reliability;
     private double cost;
 
-    public Vertex(String id) {
+    Vertex(String id) {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Vertex{" +
+            "id='" + id + '\'' +
+            ", alpha=" + alpha +
+            ", beta=" + beta +
+            ", s=" + s +
+            ", reliability=" + reliability +
+            ", cost=" + cost +
+            '}';
+    }
 
     //TODO danger to modify - used in algorithm
     @Override
