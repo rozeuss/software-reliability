@@ -70,7 +70,7 @@ public class Algorithm {
     }
 
     private Set<Edge> getEdgesRelatedWithNode(Vertex node) {
-        return graph.getAdjacentEdges(node);
+        return graph.getIncidentEdgesForVertex(node);
     }
 
     public void printPathsWithProbabilities() {

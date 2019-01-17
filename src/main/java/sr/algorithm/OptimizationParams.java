@@ -13,7 +13,7 @@ public class OptimizationParams {
         this.minReliability = minReliability;
     }
 
-    public static OptimizationParams createOptimizationParams(String filename) {
+    public static OptimizationParams readOptimizationParams(String filename) {
         List<String> params = FileUtils.readLines(filename);
         return new OptimizationParams(Double.parseDouble(params.get(0)), Double.parseDouble(params.get(1)));
     }

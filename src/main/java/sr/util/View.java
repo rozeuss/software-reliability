@@ -46,9 +46,7 @@ public class View {
     }
 
     public void show() {
-        if (areReliabilitiesSet()) {
-            addCostAndReliabilityLabelsToNodes();
-        }
+        addCostAndReliabilityLabelsToNodes();
         printReliabilities();
         guiGraph.display();
     }
@@ -67,9 +65,5 @@ public class View {
                     + df.format(node.getReliability()) + ", "
                     + df.format(node.getCost()));
         });
-    }
-
-    private boolean areReliabilitiesSet() {
-        return dataGraph.getVertices().stream().anyMatch(v -> v.getReliability() != 0.0);
     }
 }

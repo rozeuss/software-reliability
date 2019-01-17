@@ -1,44 +1,34 @@
 package sr.graph;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Graph {
     private final TreeSet<Vertex> vertices;
     private final Set<Edge> edges;
-    private final Map<Vertex, Set<Edge>> adjacencyMap;
+    private final Map<Vertex, Set<Edge>> vertexIncidentEdges;
 
     Graph() {
         vertices = new TreeSet<>(Comparator.comparing(Vertex::getId));
         edges = new HashSet<>();
-        adjacencyMap = new HashMap<>();
+        vertexIncidentEdges = new HashMap<>();
     }
 
-    //TODO
-    private void addEdge(Edge e) {
-        edges.add(e);
-        adjacencyMap.putIfAbsent(e.getSource(), new HashSet<>());
-        adjacencyMap.putIfAbsent(e.getDestination(), new HashSet<>());
-        adjacencyMap.get(e.getSource()).add(e);
-        adjacencyMap.get(e.getDestination()).add(e);
-    }
-
-    //TODO
     void addEdge(String source, String destination, double weight) {
-        addEdge(new Edge(
-            vertices.stream().filter(vertice -> vertice.getId().equals(source)).findFirst().get(),
-            vertices.stream().filter(vertice -> vertice.getId().equals(destination)).findFirst().get(),
-            weight));
+        Edge edge = new Edge(getVertexById(source), getVertexById(destination), weight);
+        edges.add(edge);
+        vertexIncidentEdges.get(edge.getSource()).add(edge);
+        vertexIncidentEdges.get(edge.getDestination()).add(edge);
     }
 
-    public Set<Edge> getAdjacentEdges(Vertex vertex) {
-        return adjacencyMap.get(vertex).stream().filter(e -> e.getSource().equals(vertex)).collect(Collectors.toSet());
+    private Vertex getVertexById(String id) {
+        return vertices.stream().filter(vertex -> vertex.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Vertex not found = " + id));
+    }
+
+    public Set<Edge> getIncidentEdgesForVertex(Vertex vertex) {
+        return vertexIncidentEdges.get(vertex).stream()
+                .filter(e -> e.getSource().equals(vertex)).collect(Collectors.toSet());
     }
 
     public Vertex getFirstVertex() {
@@ -58,7 +48,9 @@ public class Graph {
     }
 
     void addVertex(String id) {
-        vertices.add(new Vertex(id));
+        Vertex vertex = new Vertex(id);
+        vertices.add(vertex);
+        vertexIncidentEdges.put(vertex, new HashSet<>());
     }
 
 }
