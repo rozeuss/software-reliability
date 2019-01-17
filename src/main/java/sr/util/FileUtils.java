@@ -1,4 +1,4 @@
-package sr.utils;
+package sr.util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

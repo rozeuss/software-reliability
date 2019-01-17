@@ -2,13 +2,15 @@ package sr.algorithm;
 
 
 
-import sr.core.Edge;
-import sr.core.Graph;
-import sr.core.Vertex;
+import sr.graph.Edge;
+import sr.graph.Graph;
+import sr.graph.Vertex;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+//TODO
 public class Algorithm {
 
     private Graph graph;
@@ -79,10 +81,10 @@ public class Algorithm {
         });
     }
 
-    public void run(Double maxCost, Double minReliability) {
+    public void run(OptimizationParams params) {
         findPathProbabilities();
         setAllReliabilityToMax();
-        runSingle(maxCost, minReliability);
+        runSingle(params.getMaxCost(), params.getMinReliability());
     }
 
     public void runSingle(Double maxCost, Double minReliability) {

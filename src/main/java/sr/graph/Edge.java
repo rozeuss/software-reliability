@@ -1,4 +1,4 @@
-package sr.core;
+package sr.graph;
 
 import java.util.Objects;
 

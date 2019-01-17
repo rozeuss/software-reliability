@@ -1,19 +1,19 @@
-package sr.core;
+package sr.graph;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+//TODO
 public class Graph {
     private Set<Vertex> vertices;
     private Set<Edge> edges;
-    private Map<Vertex, Set<Edge>> adjList;
-    private Double maxCost;
-    private Double minReliability;
+    private Map<Vertex, Set<Edge>> adjacencyMap;
 
-    public Graph() {
+    Graph() {
         vertices = new HashSet<>();
         edges = new HashSet<>();
-        adjList = new HashMap<>();
+        adjacencyMap = new HashMap<>();
     }
 
     public boolean addNode(String label) {
@@ -37,11 +37,11 @@ public class Graph {
     public boolean addEdge(Edge e) {
         if (!edges.add(e)) return false;
 
-        adjList.putIfAbsent(e.getSource(), new HashSet<>());
-        adjList.putIfAbsent(e.getDestination(), new HashSet<>());
+        adjacencyMap.putIfAbsent(e.getSource(), new HashSet<>());
+        adjacencyMap.putIfAbsent(e.getDestination(), new HashSet<>());
 
-        adjList.get(e.getSource()).add(e);
-        adjList.get(e.getDestination()).add(e);
+        adjacencyMap.get(e.getSource()).add(e);
+        adjacencyMap.get(e.getDestination()).add(e);
 
         return true;
     }
@@ -55,8 +55,8 @@ public class Graph {
 
     public boolean removeEdge(Edge e) {
         if (!edges.remove(e)) return false;
-        Set<Edge> edgesOfV1 = adjList.get(e.getSource());
-        Set<Edge> edgesOfV2 = adjList.get(e.getDestination());
+        Set<Edge> edgesOfV1 = adjacencyMap.get(e.getSource());
+        Set<Edge> edgesOfV2 = adjacencyMap.get(e.getDestination());
 
         if (edgesOfV1 != null) edgesOfV1.remove(e);
         if (edgesOfV2 != null) edgesOfV2.remove(e);
@@ -64,8 +64,9 @@ public class Graph {
         return true;
     }
 
+
     public Set<Edge> getAdjEdgesNew(Vertex v) {
-        return adjList.get(v).stream()
+        return adjacencyMap.get(v).stream()
                 .filter(e -> e.getSource().equals(v))
                 .collect(Collectors.toSet());
     }
@@ -77,7 +78,7 @@ public class Graph {
     public Vertex getLastNode() {
         List<Vertex> tempList = new ArrayList<>();
         tempList.addAll(vertices);
-        return tempList.get(tempList.size()-1);
+        return tempList.get(tempList.size() - 1);
     }
 
     public Set<Vertex> getVertices() {
@@ -88,19 +89,4 @@ public class Graph {
         return Collections.unmodifiableSet(edges);
     }
 
-    public Double getMaxCost() {
-        return maxCost;
-    }
-
-    public void setMaxCost(Double maxCost) {
-        this.maxCost = maxCost;
-    }
-
-    public Double getMinReliability() {
-        return minReliability;
-    }
-
-    public void setMinReliability(Double minReliability) {
-        this.minReliability = minReliability;
-    }
 }
