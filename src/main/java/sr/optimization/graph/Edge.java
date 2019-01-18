@@ -1,4 +1,4 @@
-package sr.graph;
+package sr.optimization.graph;
 
 import java.util.Objects;
 

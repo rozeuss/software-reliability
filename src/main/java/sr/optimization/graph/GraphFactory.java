@@ -1,6 +1,6 @@
-package sr.graph;
+package sr.optimization.graph;
 
-import sr.util.FileUtils;
+import sr.optimization.util.FileUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +40,7 @@ public class GraphFactory {
         graph.getVertices().forEach(vertex -> {
             vertex.setAlpha(alphas.get(vertex.getId().charAt(0) - FIRST_CHAR));
             vertex.setBeta(betas.get(vertex.getId().charAt(0) - FIRST_CHAR));
-            vertex.setS(costs.get(vertex.getId().charAt(0) - FIRST_CHAR));
+            vertex.setCostConstant(costs.get(vertex.getId().charAt(0) - FIRST_CHAR));
         });
         return graph;
     }

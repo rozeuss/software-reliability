@@ -1,10 +1,10 @@
-package sr.util;
+package sr.optimization.util;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
-import sr.graph.Graph;
-import sr.graph.Vertex;
+import sr.optimization.graph.Graph;
+import sr.optimization.graph.Vertex;
 
 import java.util.function.Consumer;
 
@@ -32,7 +32,7 @@ public class View {
         node.addAttribute("ui.style", "fill-color: red, #254; fill-mode: gradient-diagonal2;");
     }
 
-    private Consumer<sr.graph.Edge> setupEdges() {
+    private Consumer<sr.optimization.graph.Edge> setupEdges() {
         return edge -> {
             Edge e = guiGraph.addEdge(edge.getSource().getId() + edge.getDestination().getId(),
                     edge.getSource().getId(), edge.getDestination().getId(), true);
@@ -46,9 +46,9 @@ public class View {
             n.addAttribute("ui.label", "(" + vertex.getId() + ") "
                     + String.format(ALPHA + ": %.02f", vertex.getAlpha()) + ", "
                     + String.format(BETA + ": %.02f", vertex.getBeta()) + ", "
-                    + String.format("S: %.02f", vertex.getS()) + ", "
+                    + String.format("S: %.02f", vertex.getCostConstant()) + ", "
                     + String.format("R: %.02f", vertex.getReliability()) + ", "
-                    + String.format("C: %.02f", vertex.getCost()));
+                    + String.format("K: %.02f", vertex.getCost()));
         };
     }
 

@@ -1,4 +1,4 @@
-package sr.graph;
+package sr.optimization.graph;
 
 import java.util.Objects;
 
@@ -6,8 +6,8 @@ public class Vertex {
     private final String id;
     private double alpha;
     private double beta;
-    private double s;
-    private double reliability;
+    private double costConstant;
+    private double reliability = 1.0;
     private double cost;
 
     Vertex(String id) {
@@ -20,7 +20,7 @@ public class Vertex {
             "id='" + id + '\'' +
             ", alpha=" + alpha +
             ", beta=" + beta +
-            ", s=" + s +
+            ", costConstant=" + costConstant +
             ", reliability=" + reliability +
             ", cost=" + cost +
             '}';
@@ -77,11 +77,11 @@ public class Vertex {
         this.cost = cost;
     }
 
-    public double getS() {
-        return s;
+    public double getCostConstant() {
+        return costConstant;
     }
 
-    public void setS(double s) {
-        this.s = s;
+    public void setCostConstant(double costConstant) {
+        this.costConstant = costConstant;
     }
 }
