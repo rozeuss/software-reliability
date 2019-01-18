@@ -7,7 +7,7 @@ public class Vertex {
     private double alpha;
     private double beta;
     private double costConstant;
-    private double reliability = 1.0;
+    private double reliability = 0.99999999;
     private double cost;
 
     Vertex(String id) {

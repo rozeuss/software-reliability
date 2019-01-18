@@ -1,4 +1,4 @@
-package sr.optimization.algorithm;
+package sr.optimization.problem;
 
 public class Solution {
     private double reliability;

@@ -1,4 +1,4 @@
-package sr.optimization.algorithm;
+package sr.optimization.problem;
 
 import sr.optimization.util.FileUtils;
 
