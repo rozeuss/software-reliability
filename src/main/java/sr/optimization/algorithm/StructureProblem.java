@@ -2,14 +2,16 @@ package sr.optimization.algorithm;
 
 import sr.optimization.graph.Edge;
 import sr.optimization.graph.Graph;
+import sr.optimization.graph.Path;
 import sr.optimization.graph.Vertex;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class StructureProblem {
 
-    private Map<List<Vertex>, Double> pathProbabilities;
+    private Map<Path, Double> pathProbabilities;
     private Graph graph;
 
     public StructureProblem(Graph graph) {
@@ -29,7 +31,7 @@ public class StructureProblem {
 
     private double calculateStructureReliability() {
         return pathProbabilities.entrySet().stream()
-                .map(e -> calculatePathReliability(e.getKey(), e.getValue()))
+                .map(e -> calculatePathReliability(e.getKey().getVertices(), e.getValue()))
                 .reduce(0.0, Double::sum);
     }
 
@@ -40,53 +42,51 @@ public class StructureProblem {
                 .reduce(0.0, Double::sum);
     }
 
-    //TODO
-    private Map<List<Vertex>, Double> findPathProbabilities() {
-        List<Vertex> vertices = new ArrayList<>();
-        Map<List<Vertex>, Double> temporaryPathProbabilities = new HashMap<>();
-        double currentProbability = 1;
-        temporaryPathProbabilities.put(vertices, currentProbability);
-        Vertex startNode = graph.getFirstVertex();
-        Vertex lastNode = graph.getLastVertex();
-        multiplyProbabilityThroughNextNode(startNode, vertices, temporaryPathProbabilities, currentProbability);
-        this.pathProbabilities = filterProperPaths(temporaryPathProbabilities, lastNode);
+    private Map<Path, Double> calculatePathsProbabilities() {
+        Map<Vertex, Boolean> isVisited = new HashMap<>();
+        graph.getVertices().forEach(v -> isVisited.put(v, false));
+        ArrayList<Vertex> pathList = new ArrayList<>();
+        pathList.add(graph.getFirstVertex());
+        printAllPathsUtil(graph.getFirstVertex(), graph.getLastVertex(), isVisited, pathList, new ArrayList<>());
         return this.pathProbabilities;
     }
 
-    //TODO
-    private Map<List<Vertex>, Double> filterProperPaths(Map<List<Vertex>, Double> pathProbabilites, Vertex endNode) {
-        return pathProbabilites.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().contains(endNode))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
+    private void printAllPathsUtil(Vertex u, Vertex d, Map<Vertex, Boolean> isVisited, List<Vertex> localPathList,
+                                   List<Edge> localEdges) {
+        // Mark the current node
+        isVisited.put(u, true);
 
-    //TODO
-    private void multiplyProbabilityThroughNextNode(Vertex node,
-                                                    List<Vertex> nodeList,
-                                                    Map<List<Vertex>, Double> pathProbabilites,
-                                                    double currentProbability) {
-        //add new node to list
-        double probability = pathProbabilites.get(nodeList);
-        nodeList.add(node);
-        double newProbability = probability * currentProbability;
-        // update probability
-        pathProbabilites.put(nodeList, newProbability);
-
-        //go through next vertex
-        Set<Edge> edges = graph.getEdgesIncidentToVertex(node);
-        if (edges == null)
+        if (u.equals(d)) {
+            double cost = 1;
+            for (Edge localEdge : localEdges) {
+                cost = cost * localEdge.getWeight();
+            }
+            pathProbabilities.put(new Path(new ArrayList<>(localPathList), new ArrayList<>(localEdges)), cost);
+            System.out.println(localPathList.stream().map(Vertex::getId).collect(toList()));
+            // if match found then no need to traverse more till depth
+            isVisited.put(u, false);
             return;
-        edges.forEach(edge -> {
-            List<Vertex> newList = new ArrayList<>();
-            newList.addAll(nodeList);
-            pathProbabilites.put(newList, newProbability);
-            multiplyProbabilityThroughNextNode(edge.getDestination(), newList, pathProbabilites, edge.getWeight());
-        });
+        }
+        // Recur for all the vertices
+        // adjacent to current vertex
+        for (Edge i : graph.getEdgesIncidentToVertex(u)) {
+            Vertex dest = i.getDestination();
+            if (!isVisited.get(dest)) {
+                // store current node
+                localPathList.add(dest);
+                localEdges.add(i);
+                printAllPathsUtil(dest, d, isVisited, localPathList, localEdges);
+                // remove current node
+                localEdges.remove(i);
+                localPathList.remove(dest);
+            }
+        }
+        // Mark the current node
+        isVisited.put(u, false);
     }
 
-    public Map<List<Vertex>, Double> solve(Parameters params) {
-        findPathProbabilities();
+    public Map<Path, Double> solve(Parameters params) {
+        calculatePathsProbabilities();
         Solution result = compute(params.getMaxCost(), params.getMinReliability());
         return pathProbabilities;
     }
@@ -128,7 +128,7 @@ public class StructureProblem {
                 answer = -1;
             }
             return answer;
-        }).limit(3).collect(Collectors.toList());
+        }).limit(3).collect(toList());
     }
 
 }

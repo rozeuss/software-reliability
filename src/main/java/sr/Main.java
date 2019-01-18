@@ -4,6 +4,7 @@ import sr.optimization.algorithm.Parameters;
 import sr.optimization.algorithm.StructureProblem;
 import sr.optimization.graph.Graph;
 import sr.optimization.graph.GraphFactory;
+import sr.optimization.graph.Path;
 import sr.optimization.graph.Vertex;
 import sr.optimization.util.View;
 
@@ -22,17 +23,17 @@ public class Main {
                 "cost-constants.txt"
         );
 
-        Map<List<Vertex>, Double> result = new StructureProblem(graph).solve(Parameters.readParams("params.txt"));
+        Map<Path, Double> result = new StructureProblem(graph).solve(Parameters.readParams("params.txt"));
         printResult(graph, result);
 
         View view = new View(graph);
         view.show();
     }
 
-    private static void printResult(Graph graph, Map<List<Vertex>, Double> result) {
+    private static void printResult(Graph graph, Map<Path, Double> result) {
         System.out.format("%-30s %10s", "Path", "Probability").println();
         result.forEach((k, v) -> {
-            List<String> collect = k.stream().map(Vertex::getId).collect(Collectors.toList());
+            List<String> collect = k.getVertices().stream().map(Vertex::getId).collect(Collectors.toList());
             System.out.format("%-30s %10.5f", collect, v).println();
         });
         System.out.print("\nR* = [ ");
