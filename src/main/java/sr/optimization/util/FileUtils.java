@@ -45,6 +45,16 @@ public class FileUtils {
         }
         return Optional.ofNullable(values).orElse(Collections.emptyList());
     }
+// Reading file when executing jar (from classpath)
+//    public static List<String> readLines(String filename) {
+//        InputStream in = FileUtils.class.getClass().getResourceAsStream("/" + filename);
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//        List<String> values;
+//        try (Stream<String> lines = reader.lines()) {
+//            values = lines.collect(Collectors.toList());
+//        }
+//        return Optional.ofNullable(values).orElse(Collections.emptyList());
+//    }
 
     public static String getStylesheetPath()  {
         URL resource = View.class.getClassLoader().getResource("stylesheet");
