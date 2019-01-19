@@ -87,15 +87,15 @@ public class StructureProblem {
         double reliability = calculateStructureReliability();
         double cost = calculateStructureCost();
         while (cost > maxCost || reliability < minReliability) {
-            searchSolution();
+            optimize();
             reliability = calculateStructureReliability();
             cost = calculateStructureCost();
         }
         return new Solution(reliability, cost);
     }
 
-    private void searchSolution() {
-        getMostExpensiveVertices().forEach(node -> node.setReliability(Opt.calculate()));
+    private void optimize() {
+        getMostExpensiveVertices().forEach(node -> node.setReliability(Opt.evaluate()));
     }
 
     private List<Vertex> getMostExpensiveVertices() {
@@ -108,7 +108,7 @@ public class StructureProblem {
         private static final double rangeMin = 0.985;
         private static final double rangeMax = 1.0;
 
-        static double calculate() {
+        static double evaluate() {
             return rangeMin + (rangeMax - rangeMin) * rand.nextDouble();
         }
     }

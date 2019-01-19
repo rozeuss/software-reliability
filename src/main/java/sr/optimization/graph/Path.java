@@ -6,10 +6,6 @@ import java.util.Objects;
 public class Path {
     private List<Vertex> vertices;
     private List<Edge> edges;
-//
-//    public Path(List<Vertex> vertices) {
-//        this.vertices = vertices;
-//    }
 
     public Path(List<Vertex> vertices, List<Edge> edges) {
         this.vertices = vertices;

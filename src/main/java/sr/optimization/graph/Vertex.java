@@ -26,7 +26,6 @@ public class Vertex {
             '}';
     }
 
-    //TODO danger to modify - used in algorithm
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
