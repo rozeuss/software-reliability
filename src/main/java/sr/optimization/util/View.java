@@ -36,7 +36,8 @@ public class View {
         return edge -> {
             Edge e = guiGraph.addEdge(edge.getSource().getId() + edge.getDestination().getId(),
                     edge.getSource().getId(), edge.getDestination().getId(), true);
-            e.addAttribute("ui.label", Double.toString(edge.getWeight()));
+            e.addAttribute("ui.label", "("+edge.getSource().getId() + "" + edge.getDestination().getId() +
+                    ") " + Double.toString(edge.getWeight()));
         };
     }
 
